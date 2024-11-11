@@ -83,22 +83,31 @@
         const locationContainer = document.getElementById("location-container");
 
         if (navigator.geolocation) {
+            
             navigator.geolocation.getCurrentPosition(
                 (position) => {
+                    
                     // locationContainer.style.display = "none";
-                    autofillLocation(); // this is a temporary workaround
 
                     
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
+                    console.log(latitude, longitude)
+                    
                     // could use OpenCage Geocoder or Nominatim to convert the coordinates to a location name
                     // Key will be hidden (Just for Testing Purposes Only will be deactivated soon)
-                    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}%2C${longitude}&key=f2243577fa5046f9800423398c7d8a50`)
-                    .then(response => response.json())
-                    .then(resData => {
-                        const city = data['results']['components']['city']
-                        document.getElementById("location").value = city;
-                    })
+                    if (latitude && longitude){
+                        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}%2C${longitude}&key=f2243577fa5046f9800423398c7d8a50`)
+                        .then(response => response.json())
+                        .then(data => {
+                            
+                            const city = data['results'][0]['components']['city']
+                            document.getElementById("location").value = city;
+                        })
+                    }else{
+                        console.error('latitude and longitude unable to be fetched')
+                    }
+                    
                     
                 },
                 (error) => {
